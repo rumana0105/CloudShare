@@ -73,10 +73,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     );
   }, [files, searchQuery]);
 
-  const effectiveTotalFiles = stats.totalFiles > 0 ? stats.totalFiles : filteredFiles.length;
-  const effectiveStorageUsed = stats.storageUsedBytes > 0 
+  const effectiveTotalFiles = typeof stats.totalFiles === 'number' && stats.totalFiles >= files.length
+    ? stats.totalFiles
+    : files.length;
+  const effectiveStorageUsed = typeof stats.storageUsedBytes === 'number' && stats.storageUsedBytes > 0 
     ? stats.storageUsedBytes 
-    : filteredFiles.reduce((acc, f) => acc + f.size, 0);
+    : files.reduce((acc, f) => acc + f.size, 0);
 
   const usagePercent = Math.min(
     100,

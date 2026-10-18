@@ -112,6 +112,16 @@ export default function App() {
   // File Handlers
   const handleUploadSuccess = (uploaded: CloudFile) => {
     showToast(`File "${uploaded.name}" uploaded to Amazon S3 successfully.`);
+    setFiles((prev) => {
+      const exists = prev.some((f) => f.id === uploaded.id || f.s3Key === uploaded.s3Key);
+      if (exists) return prev;
+      return [uploaded, ...prev];
+    });
+    setStats((prev) => ({
+      ...prev,
+      totalFiles: prev.totalFiles + 1,
+      storageUsedBytes: prev.storageUsedBytes + uploaded.size,
+    }));
     loadData();
   };
 
@@ -136,6 +146,12 @@ export default function App() {
     try {
       await CloudShareAPI.deleteFile(file.id);
       showToast(`Deleted "${file.name}" permanently from Amazon S3.`);
+      setFiles((prev) => prev.filter((f) => f.id !== file.id && f.s3Key !== file.s3Key));
+      setStats((prev) => ({
+        ...prev,
+        totalFiles: Math.max(0, prev.totalFiles - 1),
+        storageUsedBytes: Math.max(0, prev.storageUsedBytes - file.size),
+      }));
       loadData();
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : 'Delete failed');
@@ -225,6 +241,7 @@ export default function App() {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onUploadSuccess={handleUploadSuccess}
+        onRefresh={loadData}
       />
 
       <AboutModal
