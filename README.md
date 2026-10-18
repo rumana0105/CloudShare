@@ -1,14 +1,4 @@
 # CloudShare — AWS S3 File Storage System
-
-**Master of Computer Applications (MCA) · Distributed Systems & Cloud Computing (DSCC) Mini Project**
-
-### Project Developers:
-* **Romana Jagirdar**
-* **Gauri Kangle**
-* **Om Mahadik**
-* **Institution**: Master of Computer Applications (MCA)
-* **Subject**: Distributed Systems and Cloud Computing (DSCC)
-
 ---
 
 ## A. Project Overview
@@ -503,4 +493,4 @@ Execute these 14 verification scenarios to ensure your local installation and AW
 
 ## License & Academic Disclaimer
 
-This project is developed solely for educational purposes as part of the Master of Computer Applications (MCA) curriculum for the **Distributed Systems and Cloud Computing (DSCC)** mini project by **Romana Jagirdar**, **Gauri Kangle**, and **Om Mahadik**. All cloud operations interact with real Amazon Web Services infrastructure.
+This project is developed solely for educational purposes as part of the Master of Computer Applications (MCA) curriculum for the **Distributed Systems and Cloud Computing (DSCC)** mini project . All cloud operations interact with real Amazon Web Services infrastructure.
