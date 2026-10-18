@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { 
-  Cloud, 
-  Eye, 
-  EyeOff, 
   Lock, 
   Mail, 
   ArrowRight, 
   AlertCircle, 
-  ShieldCheck,
-  CheckCircle2
+  Eye, 
+  EyeOff, 
+  Loader2 
 } from 'lucide-react';
 import { CloudShareAPI } from '../services/api';
 import { AuthResponse } from '../types';
+import { AuthLayout } from '../components/AuthLayout';
 
 interface LoginPageProps {
   onSuccess: (auth: AuthResponse) => void;
@@ -34,153 +33,158 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!email.trim() || !password) {
-      setErrorMessage('Please enter both your email address and password.');
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      setErrorMessage('Please enter your email address.');
+      return;
+    }
+
+    if (!password) {
+      setErrorMessage('Please enter your password.');
       return;
     }
 
     setIsLoading(true);
     try {
-      const res = await CloudShareAPI.login(email.trim(), password);
+      const res = await CloudShareAPI.login(trimmedEmail, password);
       onSuccess(res);
     } catch (err: unknown) {
-      setErrorMessage(err instanceof Error ? err.message : 'Invalid credentials.');
+      setErrorMessage(err instanceof Error ? err.message : 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between text-slate-800">
-      {/* Top Navbar */}
-      <header className="flex h-16 w-full items-center justify-between border-b border-slate-200/80 bg-white/95 px-6 lg:px-12 backdrop-blur-md">
-        <button
-          onClick={onNavigateToHome}
-          className="flex items-center gap-2.5 text-left cursor-pointer"
-        >
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-            <Cloud className="w-5 h-5" />
+    <AuthLayout onNavigateToHome={onNavigateToHome} pageType="login">
+      <div className="w-full">
+        {/* Card Box */}
+        <div className="theme-bg-surface rounded-3xl p-6 sm:p-8 border theme-border shadow-xl backdrop-blur-sm space-y-6 transition-colors duration-200">
+          
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl theme-badge border text-[var(--accent-primary)] mb-1 shadow-2xs">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight theme-text-primary">
+              Welcome Back
+            </h2>
+            <p className="text-xs theme-text-secondary">
+              Sign in to manage and download your private Amazon S3 files.
+            </p>
           </div>
-          <div>
-            <span className="text-base font-bold tracking-tight text-slate-900">CloudShare</span>
-            <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded">
-              AWS S3
-            </span>
-          </div>
-        </button>
 
-        <button
-          onClick={onNavigateToRegister}
-          className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors cursor-pointer"
-        >
-          Need an account? Register &rarr;
-        </button>
-      </header>
+          {/* Error Feedback */}
+          {errorMessage && (
+            <div 
+              role="alert"
+              className="p-3.5 rounded-xl text-xs flex items-start gap-2.5 animate-in fade-in transition-colors duration-200"
+              style={{
+                backgroundColor: 'var(--danger-bg)',
+                borderColor: 'var(--danger-border)',
+                borderWidth: '1px',
+                color: 'var(--danger-text)',
+              }}
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--danger-primary)' }} />
+              <div className="leading-relaxed font-medium">{errorMessage}</div>
+            </div>
+          )}
 
-      {/* Main Form Section */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
-          {/* Card */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
-            <div className="text-center space-y-2">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 mb-1">
-                <Lock className="w-6 h-6" />
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label 
+                htmlFor="login-email" 
+                className="block text-xs font-semibold theme-text-primary"
+              >
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 theme-text-muted pointer-events-none" />
+                <input
+                  id="login-email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                  className="w-full h-11 pl-10 pr-4 text-xs theme-input rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                />
               </div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                Welcome Back
-              </h1>
-              <p className="text-xs text-slate-500">
-                Sign in to access your private files stored on Amazon S3.
-              </p>
             </div>
 
-            {/* Error Message */}
-            {errorMessage && (
-              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-in fade-in">
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                <div className="leading-relaxed">{errorMessage}</div>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email Address */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-700">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 pl-10 pr-4 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Password */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-700">
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label 
+                  htmlFor="login-password" 
+                  className="block text-xs font-semibold theme-text-primary"
+                >
                   Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-11 pl-10 pr-10 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <span>Authenticating...</span>
-                ) : (
-                  <>
-                    <span>Sign In</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="pt-2 text-center text-xs text-slate-500">
-              <span>Don't have an account? </span>
-              <button
-                onClick={onNavigateToRegister}
-                className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline cursor-pointer"
-              >
-                Create an account
-              </button>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 theme-text-muted pointer-events-none" />
+                <input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  placeholder="Enter your account password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                  className="w-full h-11 pl-10 pr-10 text-xs theme-input rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 theme-text-muted hover:theme-text-primary focus:outline-none transition-colors cursor-pointer p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-11 text-xs font-semibold rounded-xl shadow-md theme-btn-primary transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed select-none group mt-1"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Switch to Register link */}
+          <div className="pt-2 text-center text-xs theme-text-secondary border-t theme-border">
+            <span>Don&apos;t have an account? </span>
+            <button
+              type="button"
+              onClick={onNavigateToRegister}
+              className="font-semibold text-[var(--accent-primary)] hover:underline cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] rounded"
+            >
+              Create an account
+            </button>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="py-4 text-center text-xs text-slate-400 border-t border-slate-200/60">
-        CloudShare — AWS S3 File Storage System · Developed by Romana Jagirdar, Gauri Kangle and Om Mahadik
-      </footer>
-    </div>
+      </div>
+    </AuthLayout>
   );
 };

@@ -183,10 +183,10 @@ export default function App() {
 
   // View: Dashboard (Authenticated)
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col text-slate-800">
+    <div className="min-h-screen theme-bg-page theme-text-primary flex flex-col transition-colors duration-200">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-medium shadow-xl border border-slate-700 animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl theme-bg-elevated theme-text-primary text-xs font-medium shadow-xl border theme-border animate-in fade-in slide-in-from-bottom-2">
           {toastMessage}
         </div>
       )}
@@ -233,7 +233,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="py-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50">
+      <footer className="py-4 text-center text-xs theme-text-muted border-t theme-border theme-bg-surface/50 transition-colors duration-200">
         CloudShare — AWS S3 File Storage System · Developed by Romana Jagirdar, Gauri Kangle and Om Mahadik
       </footer>
     </div>

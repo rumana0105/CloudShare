@@ -116,17 +116,17 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+      <div className="w-full max-w-lg theme-bg-surface rounded-2xl shadow-xl border theme-border overflow-hidden transition-colors">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b theme-border">
           <div>
-            <h3 className="text-base font-semibold text-slate-900">Upload to Amazon S3</h3>
-            <p className="text-xs text-slate-500">Secure storage with AES-256 Server-Side Encryption</p>
+            <h3 className="text-base font-semibold theme-text-primary">Upload to Amazon S3</h3>
+            <p className="text-xs theme-text-muted">Secure storage with AES-256 Server-Side Encryption</p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
+            className="p-1.5 theme-text-muted hover:theme-text-primary rounded-lg hover:theme-bg-subtle transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -137,36 +137,36 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         <div className="p-6">
           {successFile ? (
             <div className="text-center py-4 space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-sm font-semibold text-slate-900">Upload Completed Successfully!</h4>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                File <span className="font-medium text-slate-700">{successFile.name}</span> has been securely stored in your private Amazon S3 bucket.
+              <h4 className="text-sm font-semibold theme-text-primary">Upload Completed Successfully!</h4>
+              <p className="text-xs theme-text-muted max-w-sm mx-auto">
+                File <span className="font-medium theme-text-primary">{successFile.name}</span> has been securely stored in your private Amazon S3 bucket.
               </p>
 
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-left text-xs space-y-1.5 font-mono">
-                <div className="text-slate-600 truncate">
-                  <span className="text-slate-400">S3 Key:</span> {successFile.s3Key}
+              <div className="p-3 theme-bg-elevated rounded-xl border theme-border text-left text-xs space-y-1.5 font-mono">
+                <div className="theme-text-secondary truncate">
+                  <span className="theme-text-muted">S3 Key:</span> {successFile.s3Key}
                 </div>
-                <div className="text-slate-600">
-                  <span className="text-slate-400">Encryption:</span> {successFile.s3Encryption}
+                <div className="theme-text-secondary">
+                  <span className="theme-text-muted">Encryption:</span> {successFile.s3Encryption}
                 </div>
-                <div className="text-slate-600">
-                  <span className="text-slate-400">Size:</span> {formatBytes(successFile.size)}
+                <div className="theme-text-secondary">
+                  <span className="theme-text-muted">Size:</span> {formatBytes(successFile.size)}
                 </div>
               </div>
 
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={handleReset}
-                  className="flex-1 px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                  className="flex-1 px-4 py-2 text-xs font-semibold theme-btn-secondary rounded-xl cursor-pointer"
                 >
                   Upload Another File
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors"
+                  className="flex-1 px-4 py-2 text-xs font-semibold theme-btn-primary rounded-xl cursor-pointer"
                 >
                   Done
                 </button>
@@ -182,11 +182,9 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
-                  dragActive
-                    ? 'border-indigo-600 bg-indigo-50/50'
-                    : selectedFile
-                    ? 'border-emerald-500/80 bg-emerald-50/20'
-                    : 'border-slate-300 hover:border-indigo-400 bg-slate-50/50'
+                  dragActive || selectedFile
+                    ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-light)]'
+                    : 'theme-border hover:border-[var(--accent-primary)] theme-bg-subtle/50'
                 }`}
               >
                 <input
@@ -197,22 +195,24 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                   className="hidden"
                 />
 
-                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl theme-badge flex items-center justify-center">
                   <Upload className="w-6 h-6" />
                 </div>
 
                 {selectedFile ? (
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-800 truncate">{selectedFile.name}</p>
-                    <p className="text-xs text-slate-500 font-mono">{formatBytes(selectedFile.size)}</p>
-                    <span className="inline-block text-[11px] text-emerald-600 font-medium">Ready to upload</span>
+                    <p className="text-sm font-semibold theme-text-primary truncate">{selectedFile.name}</p>
+                    <p className="text-xs theme-text-muted font-mono">{formatBytes(selectedFile.size)}</p>
+                    <span className="inline-block text-[11px] font-medium" style={{ color: 'var(--accent-primary)' }}>
+                      Ready to upload
+                    </span>
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-slate-800">
-                      Drag &amp; drop your file here, or <span className="text-indigo-600 font-semibold underline underline-offset-2">browse files</span>
+                    <p className="text-sm font-medium theme-text-primary">
+                      Drag &amp; drop your file here, or <span className="font-semibold underline underline-offset-2" style={{ color: 'var(--accent-primary)' }}>browse files</span>
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs theme-text-muted">
                       Supports PDF, Word, Excel, PPT, CSV, Images, and Text files up to 50 MB
                     </p>
                   </div>
@@ -221,44 +221,44 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
               {/* Progress Bar */}
               {isUploading && (
-                <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="flex justify-between text-xs text-slate-700 font-medium">
+                <div className="space-y-1.5 p-3 rounded-xl theme-bg-elevated border theme-border">
+                  <div className="flex justify-between text-xs theme-text-primary font-medium">
                     <span>Streaming chunks to S3 bucket...</span>
                     <span className="font-mono tabular-nums">{progress}%</span>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="w-full h-2 theme-bg-subtle rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-indigo-600 rounded-full transition-all duration-150"
-                      style={{ width: `${progress}%` }}
+                      className="h-full rounded-full transition-all duration-150"
+                      style={{ width: `${progress}%`, backgroundColor: 'var(--accent-primary)' }}
                     />
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-emerald-600" /> Applying AES-256 Server-Side Encryption
+                  <div className="text-[11px] theme-text-muted flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> Applying AES-256 Server-Side Encryption
                   </div>
                 </div>
               )}
 
               {/* Error Notice */}
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
+                <div className="flex items-start gap-2 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-xs text-rose-700 dark:text-rose-300">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500 dark:text-rose-400" />
                   <span>{error}</span>
                 </div>
               )}
 
               {/* Security Banner */}
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 text-[11px] text-slate-500 border border-slate-100">
-                <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+              <div className="flex items-center gap-2 p-2.5 rounded-xl theme-bg-subtle text-[11px] theme-text-muted border theme-border">
+                <ShieldCheck className="w-4 h-4 shrink-0" style={{ color: 'var(--accent-primary)' }} />
                 <span>Files are stored privately in S3. Public bucket access is strictly blocked.</span>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t theme-border">
                 <button
                   type="button"
                   onClick={onClose}
                   disabled={isUploading}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors"
+                  className="theme-btn-secondary px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -266,7 +266,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                   type="button"
                   onClick={handleStartUpload}
                   disabled={!selectedFile || isUploading}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed rounded-xl shadow-xs transition-colors"
+                  className="theme-btn-primary px-4 py-2 text-xs font-semibold rounded-xl shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploading ? 'Uploading to S3...' : 'Start Upload'}
                 </button>
