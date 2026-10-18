@@ -16,6 +16,7 @@ interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUploadSuccess: (file: CloudFile) => void;
+  onRefresh?: () => void;
 }
 
 const ALLOWED_EXTENSIONS = [
@@ -28,6 +29,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   isOpen,
   onClose,
   onUploadSuccess,
+  onRefresh,
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -115,6 +117,17 @@ export const UploadModal: React.FC<UploadModalProps> = ({
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const handleDone = () => {
+    handleReset();
+    onClose();
+    if (onRefresh) onRefresh();
+  };
+
+  const handleUploadAnother = () => {
+    handleReset();
+    if (onRefresh) onRefresh();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
       <div className="w-full max-w-lg theme-bg-surface rounded-2xl shadow-xl border theme-border overflow-hidden transition-colors">
@@ -125,7 +138,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             <p className="text-xs theme-text-muted">Secure storage with AES-256 Server-Side Encryption</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleDone}
             className="p-1.5 theme-text-muted hover:theme-text-primary rounded-lg hover:theme-bg-subtle transition-colors cursor-pointer"
             aria-label="Close"
           >
@@ -159,13 +172,13 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
               <div className="flex gap-2 pt-2">
                 <button
-                  onClick={handleReset}
+                  onClick={handleUploadAnother}
                   className="flex-1 px-4 py-2 text-xs font-semibold theme-btn-secondary rounded-xl cursor-pointer"
                 >
                   Upload Another File
                 </button>
                 <button
-                  onClick={onClose}
+                  onClick={handleDone}
                   className="flex-1 px-4 py-2 text-xs font-semibold theme-btn-primary rounded-xl cursor-pointer"
                 >
                   Done
@@ -256,7 +269,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               <div className="flex items-center justify-end gap-2 pt-2 border-t theme-border">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleDone}
                   disabled={isUploading}
                   className="theme-btn-secondary px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer"
                 >
