@@ -1,0 +1,8 @@
+{
+  "name": "Remix CloudShare - Secure AWS Cloud File Sharing",
+  "description": "CloudShare — AWS S3 File Storage System. Master of Computer Applications (MCA) Distributed Systems and Cloud Computing (DSCC) mini-project developed by Romana Jagirdar, Gauri Kangle and Om Mahadik.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
